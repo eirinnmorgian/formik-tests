@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 
 
+// basic structure of what is happening inside Formik
+
 export class MiniFormik extends Component {
+  // state built-ins
   state = {
-    values: this.props.initialValues || {},
+    values: this.props.initialValues || {}, 
     touched: {},
     errors: {},
   }
 
+  // methods to handle the fns we feed it at call-time
   handleChange = event => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -35,11 +39,11 @@ export class MiniFormik extends Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    // validate
-    // continue w submission if no errors
     this.props.onSubmit(this.state.values)
   }
 
+  // uses render props children 
+  // all state values and fns exit as props
   render() {
     return this.props.children({
       ...this.state,
@@ -51,11 +55,14 @@ export class MiniFormik extends Component {
 }
 
 
-//////
+
+// component to test MiniFormik in action
 
 export class Reservation extends Component {
   render() {
     return (
+
+      // initialize values and onSubmit fn
       <MiniFormik 
         initialValues={{
           isGoing: true,
@@ -63,6 +70,9 @@ export class Reservation extends Component {
         }}
         onSubmit={values => alert(JSON.stringify(values, null, 2))}
       >
+
+        {/* render props children
+        extract props from MiniFormik */}
         {props => {
           const { 
             values, 
@@ -74,7 +84,12 @@ export class Reservation extends Component {
           } = props
 
           return (
+            
+            // create the form
+            // MiniFormik handles submit
             <form onSubmit={handleSubmit}>
+
+              {/** simple input w MiniFormik handlers */}
               <label>
                 Is going:
                 <input
@@ -86,6 +101,8 @@ export class Reservation extends Component {
                 />
               </label>
               <br />
+
+              {/** simple input w MiniFormik handlers */}
               <label>
                 Number of guests:
                 <input
@@ -94,6 +111,8 @@ export class Reservation extends Component {
                   value={values.numberOfGuests}
                   onChange={handleChange} />
               </label>
+
+              {/** JSON string for debugging */}
               <pre>{JSON.stringify(props, null, 2)}</pre>
             </form>
           )
